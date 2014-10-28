@@ -20,17 +20,25 @@ def error_and_exit(message=nil)
 end
 
 
-ARGV.each do |a|
+while ARGV.any?
+
 
 	option = ARGV.shift
 
+	puts "option is currently #{option}."
+	puts "That means ARGV is now #{ARGV}"
+	$stdin.gets
+
 	case option
 	when "-l"
-		@length = ARGV.shift	
+		@length = ARGV.shift
+		puts "Found -l, set to #{@length}"	
 	when "-d"
 		@opts[:digits] = ARGV.shift
+		puts "Found -d, set to #{@opts[:digits]}"
 	when "-s"
 		@opts[:symbols] = ARGV.shift
+		puts "Found -s, set to #{@opts[:symbols]}"
 	when "-h", "--help"
 			error_and_exit
 	else
@@ -38,6 +46,10 @@ ARGV.each do |a|
 	end
 	
 end
+
+puts @length
+puts @opts[:digits]
+puts @opts[:symbols]
 
 # length is required
 unless defined?(@length) 
@@ -69,6 +81,10 @@ def idiot_check
 
 	if @opts[:symbols]
 		error_and_exit("Invalid value: -s #{@opts[:symbols]}") unless is_number?(@opts[:symbols])
+	end
+
+	if @opts[:symbols].to_i + @opts[:digits].to_i > @length.to_i
+		error_and_exit("Digits plus symbols can't be greater than total length.")
 	end
 	
 end

@@ -1,5 +1,7 @@
 #!/usr/bin/ruby -w
 
+# system 'clear'
+
 @opts = {digits: false, symbols: false}
 
 @letters = ('a'..'z').to_a + ('A'..'Z').to_a 
@@ -14,6 +16,7 @@
 # process the command line args before anything else.
 
 def error_and_exit(message=nil)
+	puts 
 	puts message if message
 	puts @usage
 	exit!
@@ -67,16 +70,24 @@ def idiot_check
 	
 	if @opts[:digits]
 		error_and_exit("Invalid value: -d #{@opts[:digits]}") unless is_number?(@opts[:digits])
+		error_and_exit("Digits (#{@opts[:digits]}) can't be greater than total length (#{@length}).") unless @length.to_i >= @opts[:digits].to_i
+		digits = true
 	end
 
 	if @opts[:symbols]
 		error_and_exit("Invalid value: -s #{@opts[:symbols]}") unless is_number?(@opts[:symbols])
+		error_and_exit("Symbols (#{@opts[:symbols]}) can't be greater than total length (#{@length}).") unless @length.to_i >= @opts[:symbols].to_i
+		symbols = true
 	end
 
-	if @opts[:symbols].to_i + @opts[:digits].to_i > @length.to_i
-		error_and_exit("Digits plus symbols can't be greater than total length.")
+	if digits && symbols
+		error_and_exit("Digits (#{@opts[:digits]}) plus symbols (#{@opts[:symbols]}) can't be greater than total length (#{@length}).") unless @length.to_i >= @opts[:symbols].to_i + @opts[:digits].to_i
 	end
-	
+
+	@length = @length.to_i
+	digits ? @opts[:digits] = @opts[:digits].to_i : @opts[:digits] = 0
+	symbols ? @opts[:symbols] = @opts[:symbols].to_i : @opts[:symbols] = 0
+
 end
 
 
@@ -109,4 +120,7 @@ end
 
 idiot_check
 
-# system 'clear'
+puts
+puts make_pass(@length, @opts)
+puts
+exit 0

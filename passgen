@@ -53,9 +53,9 @@ unless defined?(@length)
 end
 
 
-def is_number?(x)
+def is_number?(string)
 	# Check if a string is just digits or not.
-	if /[^0-9]/.match(x)
+	if /[^0-9]/.match(string)
 		false
 	else
 		true

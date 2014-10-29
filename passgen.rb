@@ -38,7 +38,7 @@ while ARGV.any?
 	when "-h", "--help"
 			error_and_exit
 	else
-		error_and_exit("Unknown option: #{a}")
+		error_and_exit("Unknown option: #{option}")
 	end
 	
 end

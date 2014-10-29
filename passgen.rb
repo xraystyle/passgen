@@ -1,21 +1,24 @@
 #!/usr/bin/ruby -w
 
-# system 'clear'
 
+# options hash for password complexity.
 @opts = {digits: false, symbols: false}
 
+# arrays of the character classes we'll draw characters from.
 @letters = ('a'..'z').to_a + ('A'..'Z').to_a 
 @digits = (0..9).to_a  
 @symbols = '~!@#$%^&*()_+{}|[]\;:,./<>?'.split("")
 
+# Usage instructions.
 @usage = "\nUsage: passgen [options]\nOptions:\n\t-l : total length of password (REQUIRED)\n\t-d : number of digits desired (default: 0)\n\t-s : number of symbols desired (default: 0)\n\n"
 
 
 # valid command line arguments: -l, -d, -s, -h. -l is required, unless -h is found.
 
-# process the command line args before anything else.
+
 
 def error_and_exit(message=nil)
+	# Exit the script and print the usage instructions, with a given error message if any.
 	puts 
 	puts message if message
 	puts @usage
@@ -23,8 +26,8 @@ def error_and_exit(message=nil)
 end
 
 
+# process the command line args before anything else.
 while ARGV.any?
-
 
 	option = ARGV.shift
 
@@ -44,14 +47,14 @@ while ARGV.any?
 end
 
 
-# length is required
+# length option is required
 unless defined?(@length) 
 	error_and_exit("Password length is required.")
 end
 
 
-# Check if a string is just digits or not.
 def is_number?(x)
+	# Check if a string is just digits or not.
 	if /[^0-9]/.match(x)
 		false
 	else
@@ -61,29 +64,37 @@ def is_number?(x)
 end
 
 
-# Check the passed args for syntax errors
-def idiot_check 
 
+def idiot_check 
+	# Check the passed args for syntax errors
+	# all options must be numbers to be valid.
 	unless is_number?(@length)
+		# make sure length is a number.
 		error_and_exit("Invalid value: -l #{@length}")
 	end
 	
 	if @opts[:digits]
+		# if digits exists make sure it's a number and it's less than length.
 		error_and_exit("Invalid value: -d #{@opts[:digits]}") unless is_number?(@opts[:digits])
 		error_and_exit("Digits (#{@opts[:digits]}) can't be greater than total length (#{@length}).") unless @length.to_i >= @opts[:digits].to_i
+		# digits exists and is valid.
 		digits = true
 	end
 
 	if @opts[:symbols]
+		# if digits exists make sure it's a number and it's less than length.
 		error_and_exit("Invalid value: -s #{@opts[:symbols]}") unless is_number?(@opts[:symbols])
 		error_and_exit("Symbols (#{@opts[:symbols]}) can't be greater than total length (#{@length}).") unless @length.to_i >= @opts[:symbols].to_i
+		# symbols exists and is valid.
 		symbols = true
 	end
 
 	if digits && symbols
+		# If both digits and symbols exist and are valid, make sure their total number is less than overall length.
 		error_and_exit("Digits (#{@opts[:digits]}) plus symbols (#{@opts[:symbols]}) can't be greater than total length (#{@length}).") unless @length.to_i >= @opts[:symbols].to_i + @opts[:digits].to_i
 	end
 
+	# convert the existing valid options to integers, or if they don't exist, set them to 0.
 	@length = @length.to_i
 	digits ? @opts[:digits] = @opts[:digits].to_i : @opts[:digits] = 0
 	symbols ? @opts[:symbols] = @opts[:symbols].to_i : @opts[:symbols] = 0
@@ -91,32 +102,37 @@ def idiot_check
 end
 
 
-# Make the password, with the specified length, and number of digits and symbols.
 def make_pass(l, options = {})
+	# Make the password, with the specified length, number of digits, and symbols.
 
+	# collect the characters for the password here.
 	pass_chars = []
 
+	# length - (digits + symbols) = the number of alphabet characters we want.
 	(l - (options[:digits] + options[:symbols])).times do
 
 		pass_chars << @letters.sample
 
 	end
-
+	# add the requested number of digits
 	options[:digits].times do
 		
 		pass_chars << @digits.sample
 
 	end
-
+	# add the requested number of symbols
 	options[:symbols].times do
 		
 		pass_chars << @symbols.sample
 
 	end
-
+	# shake well, serve over ice.
 	pass_chars.shuffle.join
 
 end
+
+
+# do the actual work.
 
 idiot_check
 
@@ -124,3 +140,5 @@ puts
 puts make_pass(@length, @opts)
 puts
 exit 0
+
+

@@ -4,4 +4,4 @@ This is a password generator written in Ruby that generates secure passwords in 
 
 Options are total length, the number of digits it should contain, and the number of symbols. These are specified with "-l", "-d", and "-s" respectively.
 
-This script was written as an exercise in random string generation and command line options processing.
+This script was written as an exercise in secure password generation and command line options processing.

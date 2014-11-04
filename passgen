@@ -22,7 +22,7 @@ def error_and_exit(message=nil)
 	puts 
 	puts message if message
 	puts @usage
-	exit!
+	exit 1
 end
 
 
